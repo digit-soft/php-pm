@@ -18,7 +18,7 @@ if ((!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php')) && (!$loader
     );
 }
 
-if (!PHPPM\pcntl_installed()) {
+if (!Reaction\PM\pcntl_installed()) {
     die(
         sprintf(
             'PCNTL is not enabled in the PHP installation at %s. See: http://php.net/manual/en/pcntl.installation.php',
@@ -27,16 +27,16 @@ if (!PHPPM\pcntl_installed()) {
     );
 }
 
-if (!PHPPM\pcntl_enabled()) {
+if (!Reaction\PM\pcntl_enabled()) {
     die('Some required PCNTL functions are disabled. Check `disabled_functions` in `php.ini`.');
 }
 
 use Symfony\Component\Console\Application;
-use PHPPM\Commands\StartCommand;
-use PHPPM\Commands\StopCommand;
-use PHPPM\Commands\ReloadCommand;
-use PHPPM\Commands\StatusCommand;
-use PHPPM\Commands\ConfigCommand;
+use Reaction\PM\Commands\StartCommand;
+use Reaction\PM\Commands\StopCommand;
+use Reaction\PM\Commands\ReloadCommand;
+use Reaction\PM\Commands\StatusCommand;
+use Reaction\PM\Commands\ConfigCommand;
 
 $app = new Application('PHP-PM');
 $app->add(new StartCommand);
