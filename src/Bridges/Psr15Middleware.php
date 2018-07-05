@@ -2,7 +2,7 @@
 
 namespace Reaction\PM\Bridges;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Psr15Middleware implements BridgeInterface

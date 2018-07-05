@@ -2,7 +2,7 @@
 
 namespace Reaction\PM\Bridges;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 interface BridgeInterface extends RequestHandlerInterface
 {

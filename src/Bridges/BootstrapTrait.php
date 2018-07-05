@@ -2,7 +2,7 @@
 
 namespace Reaction\PM\Bridges;
 
-use Interop\Http\Server\RequestHandlerInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Reaction\PM\Bootstraps\ApplicationEnvironmentAwareInterface;
 
 trait BootstrapTrait
