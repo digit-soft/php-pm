@@ -23,7 +23,7 @@ class ConfigCommand extends Command
             ->addOption('show-option', null, InputOption::VALUE_REQUIRED, 'Instead of writing the config, only show the given option.', '')
             ->setDescription('Configure config file, default - ppm.json');
 
-        $this->configurePPMOptions($this);
+        $this->configurePMOptions($this);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

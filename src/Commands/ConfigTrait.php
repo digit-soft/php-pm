@@ -13,7 +13,11 @@ trait ConfigTrait
 {
     protected $file = './ppm.json';
 
-    protected function configurePPMOptions(Command $command)
+    /**
+     * Configure PM options
+     * @param Command $command
+     */
+    protected function configurePMOptions(Command $command)
     {
         $command
             ->addOption('bridge', null, InputOption::VALUE_REQUIRED, 'Bridge for converting React Psr7 requests to target framework.', 'HttpKernel')
@@ -35,6 +39,11 @@ trait ConfigTrait
             ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', '');
     }
 
+    /**
+     * Render config as table in console
+     * @param OutputInterface $output
+     * @param array           $config
+     */
     protected function renderConfig(OutputInterface $output, array $config)
     {
         $table = new Table($output);
@@ -48,6 +57,7 @@ trait ConfigTrait
     }
 
     /**
+     * Get path of config file
      * @param InputInterface $input
      * @param bool $create
      * @return string
@@ -77,6 +87,13 @@ trait ConfigTrait
         return '';
     }
 
+    /**
+     * Load config file content
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return array|mixed
+     * @throws \Exception
+     */
     protected function loadConfig(InputInterface $input, OutputInterface $output)
     {
         $config = [];
@@ -131,6 +148,13 @@ trait ConfigTrait
         return $config;
     }
 
+    /**
+     * Get option from input or config array
+     * @param InputInterface $input
+     * @param string         $name
+     * @param array          $config
+     * @return mixed
+     */
     protected function optionOrConfigValue(InputInterface $input, $name, $config)
     {
         if ($input->hasParameterOption('--' . $name)) {
@@ -141,10 +165,12 @@ trait ConfigTrait
     }
 
     /**
-     * @param InputInterface $input
+     * Init config.
+     * Locate file, load it and check values
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param bool $render
-     * @return array|mixed
+     * @param bool            $render
+     * @return array
      */
     protected function initializeConfig(InputInterface $input, OutputInterface $output, $render = true)
     {

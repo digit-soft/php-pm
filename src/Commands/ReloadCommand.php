@@ -27,7 +27,7 @@ class ReloadCommand extends Command
             ->addArgument('working-directory', InputArgument::OPTIONAL, 'Working directory', './')
         ;
 
-        $this->configurePPMOptions($this);
+        $this->configurePMOptions($this);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
