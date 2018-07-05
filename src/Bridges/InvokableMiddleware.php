@@ -2,6 +2,7 @@
 
 namespace Reaction\PM\Bridges;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class InvokableMiddleware implements BridgeInterface
@@ -23,9 +24,11 @@ class InvokableMiddleware implements BridgeInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $middleware = $this->middleware;
-        return $middleware($request);
+        /** @var ResponseInterface $response */
+        $response = $middleware($request);
+        return $response;
     }
 }

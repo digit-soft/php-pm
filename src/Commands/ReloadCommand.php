@@ -23,7 +23,7 @@ class ReloadCommand extends Command
         $this
             ->setName('reload')
             ->setDescription('Reloads the server')
-            ->addOption('socket-path', null, InputOption::VALUE_REQUIRED, 'Path to a folder where socket files will be placed. Relative to working-directory or cwd()', '.ppm/run/')
+            ->addOption('socket-path', null, InputOption::VALUE_REQUIRED, 'Path to a folder where socket files will be placed. Relative to working-directory or cwd()', '.pm/run/')
             ->addArgument('working-directory', InputArgument::OPTIONAL, 'Working directory', './')
         ;
 

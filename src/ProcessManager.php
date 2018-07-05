@@ -553,7 +553,7 @@ class ProcessManager
             $this->output->writeln(
                 '<error>Worker permanently closed during PHP-PM bootstrap. Not so cool. ' .
                 'Not your fault, please create a ticket at github.com/php-pm/php-pm with ' .
-                'the output of `ppm start -vv`.</error>'
+                'the output of `pm start -vv`.</error>'
             );
 
             return;
@@ -721,7 +721,7 @@ class ProcessManager
             $this->output->writeln(
                 '<error>A ready command was sent by a worker with no connection. This was unexpected. ' .
                 'Not your fault, please create a ticket at github.com/php-pm/php-pm with ' .
-                'the output of `ppm start -vv`.</error>'
+                'the output of `pm start -vv`.</error>'
             );
             return;
         }

@@ -2,6 +2,7 @@
 
 namespace Reaction\PM\Bridges;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -24,7 +25,7 @@ class Psr15Middleware implements BridgeInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return $this->middleware->handle($request);
     }

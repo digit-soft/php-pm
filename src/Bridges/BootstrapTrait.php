@@ -8,7 +8,7 @@ use Reaction\PM\Bootstraps\ApplicationEnvironmentAwareInterface;
 trait BootstrapTrait
 {
     /**
-     * @var RequestHandlerInterface|ApplicationEnvironmentAwareInterface
+     * @var RequestHandlerInterface|ApplicationEnvironmentAwareInterface|\Closure
      */
     private $middleware;
 

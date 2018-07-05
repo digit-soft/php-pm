@@ -21,7 +21,7 @@ class ConfigCommand extends Command
         $this
             ->setName('config')
             ->addOption('show-option', null, InputOption::VALUE_REQUIRED, 'Instead of writing the config, only show the given option.', '')
-            ->setDescription('Configure config file, default - ppm.json');
+            ->setDescription('Configure config file, default - pm.json');
 
         $this->configurePMOptions($this);
     }

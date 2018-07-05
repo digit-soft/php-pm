@@ -11,7 +11,7 @@ use Symfony\Component\Process\PhpExecutableFinder;
 
 trait ConfigTrait
 {
-    protected $file = './ppm.json';
+    protected $file = './pm.json';
 
     /**
      * Configure PM options
@@ -33,8 +33,8 @@ trait ConfigTrait
             ->addOption('populate-server-var', null, InputOption::VALUE_REQUIRED, 'If a worker application uses $_SERVER var it needs to be populated by request data 1|0', 1)
             ->addOption('bootstrap', null, InputOption::VALUE_REQUIRED, 'Class responsible for bootstrapping the application', 'Reaction\PM\Bootstraps\Symfony')
             ->addOption('cgi-path', null, InputOption::VALUE_REQUIRED, 'Full path to the php-cgi executable', false)
-            ->addOption('socket-path', null, InputOption::VALUE_REQUIRED, 'Path to a folder where socket files will be placed. Relative to working-directory or cwd()', '.ppm/run/')
-            ->addOption('pidfile', null, InputOption::VALUE_REQUIRED, 'Path to a file where the pid of the master process is going to be stored', '.ppm/ppm.pid')
+            ->addOption('socket-path', null, InputOption::VALUE_REQUIRED, 'Path to a folder where socket files will be placed. Relative to working-directory or cwd()', '.pm/run/')
+            ->addOption('pidfile', null, InputOption::VALUE_REQUIRED, 'Path to a file where the pid of the master process is going to be stored', '.pm/pm.pid')
             ->addOption('reload-timeout', null, InputOption::VALUE_REQUIRED, 'The number of seconds to wait before force closing a worker during a reload, or -1 to disable. Default: 30', 30)
             ->addOption('config', 'c', InputOption::VALUE_REQUIRED, 'Path to config file', '');
     }

@@ -22,7 +22,7 @@ class StatusCommand extends Command
         $this
             ->setName('status')
             ->setDescription('Status of all processes')
-            ->addOption('socket-path', null, InputOption::VALUE_REQUIRED, 'Path to a folder where socket files will be placed. Relative to working-directory or cwd()', '.ppm/run/')
+            ->addOption('socket-path', null, InputOption::VALUE_REQUIRED, 'Path to a folder where socket files will be placed. Relative to working-directory or cwd()', '.pm/run/')
             ->addArgument('working-directory', null, 'Working directory', './')
         ;
 
