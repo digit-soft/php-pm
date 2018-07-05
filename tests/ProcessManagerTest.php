@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM\Tests;
+namespace Reaction\PM\Tests;
 
 class ProcessManagerTest extends PhpPmTestCase
 {

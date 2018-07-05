@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM\Bridges;
+namespace Reaction\PM\Bridges;
 
 use Interop\Http\Server\RequestHandlerInterface;
 

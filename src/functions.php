@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM;
+namespace Reaction\PM;
 
 /**
  * Adds a file path to the watcher list of PPM's master process.

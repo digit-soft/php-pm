@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM;
+namespace Reaction\PM;
 
 /**
  * Nitty gritty helper methods to hijack objects. Useful to reset properties that would otherwise run amok

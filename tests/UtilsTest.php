@@ -1,8 +1,8 @@
 <?php
 
-namespace PHPPM\Tests;
+namespace Reaction\PM\Tests;
 
-use PHPPM\Utils;
+use Reaction\PM\Utils;
 
 class UtilsTest extends PhpPmTestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM\Bootstraps;
+namespace Reaction\PM\Bootstraps;
 
 interface ApplicationEnvironmentAwareInterface
 {

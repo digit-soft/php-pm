@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM;
+namespace Reaction\PM;
 
 use React\Socket\ConnectionInterface;
 use React\ChildProcess\Process;

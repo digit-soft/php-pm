@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM\Bridges;
+namespace Reaction\PM\Bridges;
 
 use Psr\Http\Message\ServerRequestInterface;
 use RingCentral\Psr7;

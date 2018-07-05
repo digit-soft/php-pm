@@ -1,11 +1,15 @@
 <?php
 
-namespace PHPPM\Bridges;
+namespace Reaction\PM\Bridges;
 
-use PHPPM\Bootstraps\ApplicationEnvironmentAwareInterface;
+use Interop\Http\Server\RequestHandlerInterface;
+use Reaction\PM\Bootstraps\ApplicationEnvironmentAwareInterface;
 
 trait BootstrapTrait
 {
+    /**
+     * @var RequestHandlerInterface|ApplicationEnvironmentAwareInterface
+     */
     private $middleware;
 
     /**
@@ -37,7 +41,7 @@ trait BootstrapTrait
         $bootstraps = [
             $appBootstrap,
             '\\' . $appBootstrap,
-            '\\PHPPM\Bootstraps\\' . ucfirst($appBootstrap)
+            '\\Reaction\PM\Bootstraps\\' . ucfirst($appBootstrap)
         ];
 
         foreach ($bootstraps as $class) {

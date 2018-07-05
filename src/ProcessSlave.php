@@ -1,12 +1,12 @@
 <?php
 declare(ticks = 1);
 
-namespace PHPPM;
+namespace Reaction\PM;
 
 use Evenement\EventEmitterInterface;
 use MKraemer\ReactPCNTL\PCNTL;
-use PHPPM\Bridges\BridgeInterface;
-use PHPPM\Debug\BufferingLogger;
+use Reaction\PM\Bridges\BridgeInterface;
+use Reaction\PM\Debug\BufferingLogger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use React\EventLoop\Factory;
@@ -225,7 +225,7 @@ class ProcessSlave
             if (true === class_exists($this->bridgeName)) {
                 $bridgeClass = $this->bridgeName;
             } else {
-                $bridgeClass = sprintf('PHPPM\Bridges\\%s', ucfirst($this->bridgeName));
+                $bridgeClass = sprintf('Reaction\PM\Bridges\\%s', ucfirst($this->bridgeName));
             }
 
             $this->bridge = new $bridgeClass;
@@ -393,9 +393,6 @@ class ProcessSlave
         } catch (\Throwable $t) {
             // PHP >= 7.0
             $response = $catchLog($t);
-        } catch (\Exception $e) {
-            // PHP < 7.0
-            $response = $catchLog($e);
         }
 
         $promise = new Promise(function ($resolve) use ($response) {

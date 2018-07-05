@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM;
+namespace Reaction\PM;
 
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;

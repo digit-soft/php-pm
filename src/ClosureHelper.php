@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM;
+namespace Reaction\PM;
 
 /**
  * Helper class to avoid creating closures in static context

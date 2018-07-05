@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-namespace PHPPM\Debug;
+namespace Reaction\PM\Debug;
 
 use Psr\Log\AbstractLogger;
 

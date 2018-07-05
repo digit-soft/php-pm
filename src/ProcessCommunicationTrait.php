@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM;
+namespace Reaction\PM;
 
 use React\Socket\ConnectionInterface;
 
@@ -14,7 +14,7 @@ trait ProcessCommunicationTrait
      *
      * @var string
      */
-    protected $socketPath = '.ppm/run/';
+    protected $socketPath = '.pm/run/';
 
     /**
      * Parses a received message. Redirects to the appropriate `command*` method.
@@ -108,7 +108,8 @@ trait ProcessCommunicationTrait
     }
 
     /**
-     * @param int $port
+     * @param int  $port
+     * @param bool $overwrite
      *
      * @return string
      */

@@ -1,6 +1,6 @@
 <?php
 
-namespace PHPPM;
+namespace Reaction\PM;
 
 use React\EventLoop\LoopInterface;
 use React\Socket\UnixConnector;
