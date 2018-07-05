@@ -1,5 +1,5 @@
 {
-    "name": "php-pm/php-pm",
+    "name": "digit-soft/re-action-pm",
     "description": "PHP-PM is a process manager, supercharger and load balancer for PHP applications.",
     "license": "MIT",
     "require": {
@@ -36,6 +36,6 @@
         "php-pm/httpkernel-adapter": "HttpKernel adapter for Symfony and Laravel frameworks"
     },
     "bin": [
-        "bin/ppm"
+        "bin/pm"
     ]
 }
