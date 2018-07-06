@@ -4,6 +4,8 @@ namespace Reaction\PM\Bridges;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use React\Promise\PromiseInterface;
+use function Reaction\Promise\resolve;
 
 class InvokableMiddleware implements BridgeInterface
 {
@@ -12,7 +14,7 @@ class InvokableMiddleware implements BridgeInterface
     /**
      * {@inheritdoc}
      */
-    public function bootstrap($appBootstrap, $appenv, $debug)
+    public function bootstrap($appBootstrap, $appenv, $debug, $loader = null)
     {
         $this->bootstrapApplicationEnvironment($appBootstrap, $appenv, $debug);
 
@@ -24,11 +26,11 @@ class InvokableMiddleware implements BridgeInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): PromiseInterface
     {
         $middleware = $this->middleware;
         /** @var ResponseInterface $response */
         $response = $middleware($request);
-        return $response;
+        return resolve($response);
     }
 }

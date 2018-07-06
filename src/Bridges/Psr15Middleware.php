@@ -2,9 +2,10 @@
 
 namespace Reaction\PM\Bridges;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use React\Promise\PromiseInterface;
+use function Reaction\Promise\resolve;
 
 class Psr15Middleware implements BridgeInterface
 {
@@ -13,7 +14,7 @@ class Psr15Middleware implements BridgeInterface
     /**
      * {@inheritdoc}
      */
-    public function bootstrap($appBootstrap, $appenv, $debug)
+    public function bootstrap($appBootstrap, $appenv, $debug, $loader = null)
     {
         $this->bootstrapApplicationEnvironment($appBootstrap, $appenv, $debug);
 
@@ -25,8 +26,8 @@ class Psr15Middleware implements BridgeInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): PromiseInterface
     {
-        return $this->middleware->handle($request);
+        return resolve($this->middleware->handle($request));
     }
 }

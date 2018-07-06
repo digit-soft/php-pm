@@ -2,6 +2,7 @@
 
 namespace Reaction\PM\Bridges;
 
+use Composer\Autoload\ClassLoader;
 use React\Promise\PromiseInterface;
 use Reaction\PM\Bootstraps\ApplicationEnvironmentAwareInterface;
 use Reaction\PM\Bootstraps\BootstrapInterface;
@@ -41,11 +42,12 @@ class ReactionBridge implements BridgeInterface
      * Reaction\PM\Bridges\BridgeInterface interface which should live within your app itself and
      * be able to be autoloaded.
      *
-     * @param string $appBootstrap The name of the class used to bootstrap the application
-     * @param string|null $appenv The environment your application will use to bootstrap (if any)
-     * @param boolean $debug If debug is enabled
+     * @param string           $appBootstrap The name of the class used to bootstrap the application
+     * @param string|null      $appenv The environment your application will use to bootstrap (if any)
+     * @param boolean          $debug If debug is enabled
+     * @param ClassLoader|null $loader
      */
-    public function bootstrap($appBootstrap, $appenv, $debug)
+    public function bootstrap($appBootstrap, $appenv, $debug, $loader = null)
     {
         //error_log(print_r([], true));
         //\Reaction::init(getcwd() . '/Config');
@@ -54,7 +56,7 @@ class ReactionBridge implements BridgeInterface
 
         $this->bootstrap = new $appBootstrap();
         if ($this->bootstrap instanceof ApplicationEnvironmentAwareInterface) {
-            $this->bootstrap->initialize($appenv, $debug);
+            $this->bootstrap->initialize($appenv, $debug, $loader);
         }
         if ($this->bootstrap instanceof BootstrapInterface) {
             $this->application = $this->bootstrap->getApplication();
