@@ -5,7 +5,6 @@ namespace Reaction\PM;
 
 use Composer\Autoload\ClassLoader;
 use Evenement\EventEmitterInterface;
-use MKraemer\ReactPCNTL\PCNTL;
 use React\Promise\PromiseInterface;
 use Reaction\PM\Bridges\BridgeInterface;
 use Reaction\PM\Debug\BufferingLogger;

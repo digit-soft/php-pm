@@ -471,7 +471,7 @@ class ProcessManager
         $this->web = new Server(sprintf('%s:%d', $this->host, $this->port), $this->loop);
         $this->web->on('connection', [$this, 'onRequest']);
 
-        $pcntl = new \MKraemer\ReactPCNTL\PCNTL($this->loop);
+        $pcntl = new PCNTL($this->loop);
         $pcntl->on(SIGTERM, [$this, 'shutdown']);
         $pcntl->on(SIGINT, [$this, 'shutdown']);
         $pcntl->on(SIGCHLD, [$this, 'handleSigchld']);
