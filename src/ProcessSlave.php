@@ -3,6 +3,7 @@ declare(ticks = 1);
 
 namespace Reaction\PM;
 
+use Composer\Autoload\ClassLoader;
 use Evenement\EventEmitterInterface;
 use MKraemer\ReactPCNTL\PCNTL;
 use React\Promise\PromiseInterface;
@@ -97,6 +98,10 @@ class ProcessSlave
     protected $baseServer;
 
     protected $logFormat = '[$time_local] $remote_addr - $remote_user "$request" $status $bytes_sent "$http_referer"';
+    /**
+     * @var ClassLoader
+     */
+    protected $loader;
 
     /**
      * Contains some configuration options.
@@ -111,7 +116,7 @@ class ProcessSlave
      */
     protected $config;
 
-    public function __construct($socketpath, $bridgeName, $appBootstrap, array $config = [])
+    public function __construct($socketpath, $bridgeName, $appBootstrap, array $config = [], $loader = null)
     {
         $this->setSocketPath($socketpath);
 
@@ -122,6 +127,7 @@ class ProcessSlave
         if ($this->config['session_path']) {
             session_save_path($this->config['session_path']);
         }
+        $this->loader = $loader;
     }
 
     /**
@@ -247,7 +253,7 @@ class ProcessSlave
     protected function bootstrap($appBootstrap, $appenv, $debug)
     {
         if ($bridge = $this->getBridge()) {
-            $bridge->bootstrap($appBootstrap, $appenv, $debug);
+            $bridge->bootstrap($appBootstrap, $appenv, $debug, $this->loader);
             $this->sendMessage($this->controller, 'ready');
         }
     }

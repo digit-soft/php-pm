@@ -169,12 +169,12 @@ class ProcessManager
     protected $slavesToReload = [];
 
     /**
-     * Full path to the php-cgi executable. If not set, we try to determine the
+     * Full path to the php executable. If not set, we try to determine the
      * path automatically.
      *
      * @var string
      */
-    protected $phpCgiExecutable = '';
+    protected $phpExecutable = '';
 
     /**
      * @var null|int
@@ -328,11 +328,11 @@ class ProcessManager
     }
 
     /**
-     * @param string $phpCgiExecutable
+     * @param string $phpExecutable
      */
-    public function setPhpCgiExecutable($phpCgiExecutable)
+    public function setPhpExecutable($phpExecutable)
     {
-        $this->phpCgiExecutable = $phpCgiExecutable;
+        $this->phpExecutable = $phpExecutable;
     }
 
     /**
@@ -1131,7 +1131,7 @@ namespace Reaction\PM;
 
 set_time_limit(0);
 
-require_once file_exists($dir . '/vendor/autoload.php')
+\$composerLoader = require_once file_exists($dir . '/vendor/autoload.php')
     ? $dir . '/vendor/autoload.php'
     : $dir . '/../../autoload.php';
     
@@ -1151,7 +1151,7 @@ if (!pcntl_enabled()) {
 }
 
 //global for all global functions
-ProcessSlave::\$slave = new ProcessSlave($socketpath, $bridge, $bootstrap, $config);
+ProcessSlave::\$slave = new ProcessSlave($socketpath, $bridge, $bootstrap, $config, \$composerLoader);
 ProcessSlave::\$slave->run();
 EOF;
 
@@ -1163,8 +1163,8 @@ EOF;
         // we can not use -q since this disables basically all header support
         // but since this is necessary at least in Symfony we can not use it.
         // e.g. headers_sent() returns always true, although wrong.
-        //For version 4.x of \Symfony\Component\Process\Process package
-        $commandline = ['exec', $this->phpCgiExecutable, '-C', $file];
+        // For version 4.x of \Symfony\Component\Process\Process package
+        $commandline = ['exec', $this->phpExecutable, '-C', $file];
         $processInstance = new \Symfony\Component\Process\Process($commandline);
         $commandline = $processInstance->getCommandLine();
 
