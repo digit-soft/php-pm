@@ -6,9 +6,9 @@ namespace Reaction\PM\Bootstraps;
 class ReactionBootstrap implements BootstrapInterface, ApplicationEnvironmentAwareInterface
 {
 
-    public function initialize($appenv, $debug)
+    public function initialize($appenv, $debug, $loader = null)
     {
-        \Reaction::init();
+        \Reaction::init($loader);
         \Reaction::$app->initRouter();
         \Reaction::$app->run();
     }

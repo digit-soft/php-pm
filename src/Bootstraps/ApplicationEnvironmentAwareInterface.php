@@ -4,5 +4,5 @@ namespace Reaction\PM\Bootstraps;
 
 interface ApplicationEnvironmentAwareInterface
 {
-    public function initialize($appenv, $debug);
+    public function initialize($appenv, $debug, $loader = null);
 }
