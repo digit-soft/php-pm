@@ -5,6 +5,7 @@ namespace Reaction\PM;
 
 use Evenement\EventEmitterInterface;
 use MKraemer\ReactPCNTL\PCNTL;
+use React\Promise\PromiseInterface;
 use Reaction\PM\Bridges\BridgeInterface;
 use Reaction\PM\Debug\BufferingLogger;
 use Psr\Http\Message\ResponseInterface;
@@ -13,12 +14,12 @@ use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
 use React\Http\Response;
 use React\Http\Server as HttpServer;
-use React\Promise\Promise;
 use React\Socket\ConnectionInterface;
 use React\Socket\ServerInterface;
 use React\Socket\UnixConnector;
 use React\Socket\UnixServer;
 use React\Stream\ReadableResourceStream;
+use function Reaction\Promise\resolve;
 use Symfony\Component\Debug\ErrorHandler;
 
 class ProcessSlave
@@ -363,7 +364,7 @@ class ProcessSlave
      *
      * @param ServerRequestInterface $request
      *
-     * @return ResponseInterface|Promise
+     * @return ResponseInterface|PromiseInterface
      * @throws \Exception
      */
     public function onRequest(ServerRequestInterface $request)
@@ -389,15 +390,12 @@ class ProcessSlave
         };
 
         try {
-            $response = $this->handleRequest($request);
+            $promise = $this->handleRequest($request);
         } catch (\Throwable $t) {
             // PHP >= 7.0
             $response = $catchLog($t);
+            $promise = resolve($response);
         }
-
-        $promise = new Promise(function ($resolve) use ($response) {
-            return $resolve($response);
-        });
 
         $promise = $promise->then(function (ResponseInterface $response) use ($request, $logTime, $remoteIp) {
             if ($this->isLogging()) {
@@ -413,14 +411,14 @@ class ProcessSlave
      * Handle a redirected request from master.
      *
      * @param ServerRequestInterface $request
-     * @return ResponseInterface
+     * @return PromiseInterface
      */
     protected function handleRequest(ServerRequestInterface $request)
     {
         if ($this->getStaticDirectory()) {
             $staticResponse = $this->serveStatic($request);
             if ($staticResponse instanceof ResponseInterface) {
-                return $staticResponse;
+                return resolve($staticResponse);
             }
         }
 
@@ -441,7 +439,7 @@ class ProcessSlave
             );
             $this->shutdown();
         }
-        return $response;
+        return resolve($response);
     }
 
     protected function prepareEnvironment(ServerRequestInterface $request)
