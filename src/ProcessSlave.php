@@ -196,7 +196,6 @@ class ProcessSlave
 
         if ($this->loop) {
             $this->sendCurrentFiles();
-            $this->loop->tick();
         }
 
         if ($this->controller && $this->controller->isWritable()) {
@@ -207,11 +206,28 @@ class ProcessSlave
         }
         if ($this->loop) {
             $this->sendCurrentFiles();
-            $this->loop->tick();
             @$this->loop->stop();
         }
 
         exit;
+    }
+
+    /**
+     * Get Event loop
+     * @return LoopInterface
+     */
+    public function getLoop()
+    {
+        return $this->loop;
+    }
+
+    /**
+     * Get class loader
+     * @return ClassLoader|null
+     */
+    public function getLoader()
+    {
+        return $this->loader;
     }
 
     /**
@@ -235,6 +251,7 @@ class ProcessSlave
             }
 
             $this->bridge = new $bridgeClass;
+            $this->bridge->slave = $this;
         }
 
         return $this->bridge;
@@ -252,7 +269,7 @@ class ProcessSlave
     protected function bootstrap($appBootstrap, $appenv, $debug)
     {
         if ($bridge = $this->getBridge()) {
-            $bridge->bootstrap($appBootstrap, $appenv, $debug, $this->loader);
+            $bridge->bootstrap($appBootstrap, $appenv, $debug);
             $this->sendMessage($this->controller, 'ready');
         }
     }

@@ -5,7 +5,7 @@ namespace Reaction\PM;
 
 use React\EventLoop\Factory;
 use React\EventLoop\LoopInterface;
-use React\EventLoop\Timer\TimerInterface;
+use React\EventLoop\TimerInterface;
 use React\Socket\Server;
 use React\Socket\UnixServer;
 use React\Socket\Connection;
@@ -14,7 +14,6 @@ use React\Socket\ConnectionInterface;
 use React\ChildProcess\Process;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Debug\Debug;
-use Symfony\Component\Process\ProcessUtils;
 
 class ProcessManager
 {
@@ -287,7 +286,6 @@ class ProcessManager
         }
 
         if ($this->loop) {
-            $this->loop->tick();
             $this->loop->stop();
         }
 
@@ -1036,7 +1034,7 @@ class ProcessManager
         $this->filesLastMd5 = [];
 
         if ($this->reloadTimeoutTimer !== null) {
-            $this->reloadTimeoutTimer->cancel();
+            $this->loop->cancelTimer($this->reloadTimeoutTimer);
         }
 
         $this->reloadTimeoutTimer = $this->loop->addTimer($this->reloadTimeout, function () use ($onSlaveClosed) {
