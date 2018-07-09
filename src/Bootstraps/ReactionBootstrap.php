@@ -2,17 +2,30 @@
 
 namespace Reaction\PM\Bootstraps;
 
+use React\EventLoop\LoopInterface;
 
-class ReactionBootstrap implements BootstrapInterface, ApplicationEnvironmentAwareInterface
+class ReactionBootstrap extends StaticBootstrap implements ApplicationEnvironmentAwareInterface
 {
-
-    public function initialize($appenv, $debug, $loader = null)
+    /**
+     * @inheritdoc
+     */
+    public function initialize($appEnv, $debug)
     {
-        \Reaction::init($loader);
+        $slave = $this->bridge->slave;
+
+        \Reaction::initBasic($slave->getLoader());
+        //Set external event loop
+        \Reaction::$di->setSingleton(LoopInterface::class, $slave->getLoop());
+        //Set external event loop flag
+        \Reaction::$config->set('appStatic.loopIsExternal', true);
+        \Reaction::initStaticApp();
         \Reaction::$app->initRouter();
         \Reaction::$app->run();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getApplication()
     {
         return \Reaction::$app;

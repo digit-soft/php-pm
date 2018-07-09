@@ -4,5 +4,10 @@ namespace Reaction\PM\Bootstraps;
 
 interface ApplicationEnvironmentAwareInterface
 {
-    public function initialize($appenv, $debug, $loader = null);
+    /**
+     * Initialize application bootstrap with given debug status and environment name
+     * @param string $appEnv
+     * @param bool $debug
+     */
+    public function initialize($appEnv, $debug);
 }
