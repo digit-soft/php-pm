@@ -2,17 +2,28 @@
 
 namespace Reaction\PM\Bridges;
 
+use Composer\Autoload\ClassLoader;
 use Psr\Http\Message\ServerRequestInterface;
 use React\Promise\PromiseInterface;
+use Reaction\PM\ProcessSlave;
 use function Reaction\Promise\resolve;
 use RingCentral\Psr7;
 
 class StaticBridge implements BridgeInterface
 {
     /**
+     * @var ProcessSlave
+     */
+    public $slave;
+    /**
+     * @var ClassLoader
+     */
+    public $loader;
+
+    /**
      * {@inheritdoc}
      */
-    public function bootstrap($appBootstrap, $appenv, $debug, $loader = null)
+    public function bootstrap($appBootstrap, $appenv, $debug)
     {
         // empty
     }

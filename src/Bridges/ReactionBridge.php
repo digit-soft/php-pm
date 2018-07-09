@@ -7,13 +7,10 @@ use React\Promise\PromiseInterface;
 use Reaction\PM\Bootstraps\ApplicationEnvironmentAwareInterface;
 use Reaction\PM\Bootstraps\BootstrapInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Reaction\RequestApplicationInterface;
 use Reaction\StaticApplicationInterface;
-use RingCentral\Psr7;
 
 
-class ReactionBridge implements BridgeInterface
+class ReactionBridge extends StaticBridge
 {
     /**
      * An application implementing the HttpKernelInterface
@@ -42,12 +39,11 @@ class ReactionBridge implements BridgeInterface
      * Reaction\PM\Bridges\BridgeInterface interface which should live within your app itself and
      * be able to be autoloaded.
      *
-     * @param string           $appBootstrap The name of the class used to bootstrap the application
-     * @param string|null      $appenv The environment your application will use to bootstrap (if any)
-     * @param boolean          $debug If debug is enabled
-     * @param ClassLoader|null $loader
+     * @param string      $appBootstrap The name of the class used to bootstrap the application
+     * @param string|null $appenv The environment your application will use to bootstrap (if any)
+     * @param boolean     $debug If debug is enabled
      */
-    public function bootstrap($appBootstrap, $appenv, $debug, $loader = null)
+    public function bootstrap($appBootstrap, $appenv, $debug)
     {
         //error_log(print_r([], true));
         //\Reaction::init(getcwd() . '/Config');
@@ -55,8 +51,9 @@ class ReactionBridge implements BridgeInterface
         $appBootstrap = $this->normalizeAppBootstrap($appBootstrap);
 
         $this->bootstrap = new $appBootstrap();
+        $this->bootstrap->bridge = $this;
         if ($this->bootstrap instanceof ApplicationEnvironmentAwareInterface) {
-            $this->bootstrap->initialize($appenv, $debug, $loader);
+            $this->bootstrap->initialize($appenv, $debug);
         }
         if ($this->bootstrap instanceof BootstrapInterface) {
             $this->application = $this->bootstrap->getApplication();
@@ -74,12 +71,6 @@ class ReactionBridge implements BridgeInterface
         }, function() {
             error_log('Error');
         });
-
-        return new Psr7\Response(200, [], 'test body');
-        if (null === $this->application) {
-            // internal server error
-            return new Psr7\Response(500, ['Content-type' => 'text/plain'], 'Application not configured during bootstrap');
-        }
     }
     /**
      * @param $appBootstrap
