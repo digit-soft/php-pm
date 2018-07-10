@@ -141,9 +141,14 @@ class RequestHandler
      */
     public function slaveAvailable(Slave $slave)
     {
-        if ($slave->isExpired()) {
+        $isExpired = $slave->isExpired();
+        $isMemoryExceeded = $slave->isMemoryExceeded();
+        if ($isExpired || $isMemoryExceeded) {
             $slave->close();
-            $this->output->writeln(sprintf('Restart worker #%d because it reached its TTL', $slave->getPort()));
+            $message = $isExpired
+                ? sprintf('Restart worker #%d because it reached its TTL', $slave->getPort())
+                : sprintf('Restart worker #%d because it reached its max memory usage "%.2fMB"', $slave->getPort(), $slave->getMemoryUsage(true));
+            $this->output->writeln($message);
             $slave->getConnection()->close();
             return false;
         }

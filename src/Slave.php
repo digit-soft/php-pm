@@ -66,17 +66,32 @@ class Slave
     private $ttl;
 
     /**
+     * Max amount of memory usage
+     *
+     * @var int|null
+     */
+    private $maxMemory;
+
+    /**
+     * Memory usage (updated via commandSlaveStatus from ProcessSlave)
+     *
+     * @var int
+     */
+    private $memoryUsed = 0;
+
+    /**
      * Start timestamp
      *
      * @var int
      */
     private $startedAt;
 
-    public function __construct($port, $maxRequests, $ttl = null)
+    public function __construct($port, $maxRequests, $ttl = null, $maxMemory = null)
     {
         $this->port = $port;
         $this->maxRequests = $maxRequests;
-        $this->ttl = ((int) $ttl < 1) ? null : $ttl;
+        $this->ttl = ((int)$ttl < 1) ? null : $ttl;
+        $this->maxMemory = ((int)$maxMemory <= 0) ? null : (int)$maxMemory;
         $this->startedAt = time();
 
         $this->status = self::CREATED;
@@ -263,6 +278,35 @@ class Slave
     public function isExpired()
     {
         return null !== $this->ttl && time() >= ($this->startedAt + $this->ttl);
+    }
+
+    /**
+     * If Max memory usage was defined, make sure slave is still allowed to run
+     *
+     * @return bool
+     */
+    public function isMemoryExceeded()
+    {
+        return null !== $this->maxMemory && $this->memoryUsed >= $this->maxMemory;
+    }
+
+    /**
+     * Set memory usage
+     * @param int $amount
+     */
+    public function setMemoryUsage($amount)
+    {
+        $this->memoryUsed = (int)$amount;
+    }
+
+    /**
+     * Get memory usage
+     * @param bool $inMb
+     * @return float|int
+     */
+    public function getMemoryUsage($inMb = false)
+    {
+        return $inMb ? $this->memoryUsed / 1048576 : $this->memoryUsed;
     }
 
     /**
