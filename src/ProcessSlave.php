@@ -340,6 +340,7 @@ class ProcessSlave
                 $httpServer->listen($this->server);
 
                 $this->sendMessage($this->controller, 'register', ['pid' => getmypid(), 'port' => $port]);
+                $this->logStatusToManager();
             }
         );
     }
@@ -372,6 +373,19 @@ class ProcessSlave
 
         $this->tryConnect();
         $this->loop->run();
+    }
+
+    /**
+     * Kickstart slave status message sending timer
+     */
+    protected function logStatusToManager()
+    {
+        $this->loop->addPeriodicTimer(5, function() {
+            $data = [
+                'memUsage' => memory_get_usage(),
+            ];
+            $this->sendMessage($this->controller, 'slaveStatus', $data);
+        });
     }
 
     public function commandBootstrap(array $data, ConnectionInterface $conn)

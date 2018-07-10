@@ -70,6 +70,13 @@ class ProcessManager
     protected $ttl;
 
     /**
+     * Worker max memory usage before it's recycled
+     *
+     * @var int|null
+     */
+    protected $maxMemoryUsage = 0;
+
+    /**
      * @var SlavePool
      */
     protected $slaves;
@@ -166,6 +173,13 @@ class ProcessManager
      * @var Slave[]
      */
     protected $slavesToReload = [];
+
+    /**
+     * Close slave timers array by slave port
+     *
+     * @var TimerInterface
+     */
+    protected $closeSlaveTimers = [];
 
     /**
      * Full path to the php executable. If not set, we try to determine the
@@ -323,6 +337,14 @@ class ProcessManager
     public function setTtl($ttl)
     {
         $this->ttl = $ttl;
+    }
+
+    /**
+     * @param int $maxMemoryUsage
+     */
+    public function setMaxMemoryUsage($maxMemoryUsage)
+    {
+        $this->maxMemoryUsage = $maxMemoryUsage;
     }
 
     /**
@@ -763,6 +785,25 @@ class ProcessManager
     }
 
     /**
+     * Check slave status command
+     * @param array               $data
+     * @param ConnectionInterface $conn
+     */
+    protected function commandSlaveStatus(array $data, ConnectionInterface $conn)
+    {
+        $memUsage = (int)$data['memUsage'];
+        try {
+            $slave = $this->slaves->getByConnection($conn);
+        } catch (\Exception $exception) {
+            $slave = null;
+        }
+        if ($slave !== null) {
+            /** @var Slave $slave */
+            $slave->setMemoryUsage($memUsage);
+        }
+    }
+
+    /**
      * Register client files for change tracking
      *
      * @param array      $data
@@ -937,6 +978,71 @@ class ProcessManager
             $connection = $slave->getConnection();
             $connection->removeAllListeners('close');
             $connection->close();
+        }
+    }
+
+    /**
+     * Close slave graceful
+     * @param Slave         $slave
+     * @param \Closure|null $onSlaveClosed
+     */
+    protected function closeSlaveGraceful(Slave $slave, $onSlaveClosed = null)
+    {
+        if (!$onSlaveClosed) {
+            $onSlaveClosed = function ($slave) {};
+        }
+
+        $connection = $slave->getConnection();
+
+        if ($connection) {
+            // todo: connection has to be null-checked, because of race conditions with many workers. fixed in #366
+            $connection->on('close', function () use ($onSlaveClosed, $slave) {
+                $onSlaveClosed($slave);
+            });
+        }
+
+        $closeByTimer = false;
+
+        if ($slave->getStatus() === Slave::BUSY) {
+            if ($this->output->isVeryVerbose()) {
+                $this->output->writeln(sprintf('Waiting for worker #%d to finish', $slave->getPort()));
+            }
+
+            $slave->lock();
+            $closeByTimer = true;
+        } elseif ($slave->getStatus() === Slave::LOCKED) {
+            if ($this->output->isVeryVerbose()) {
+                $this->output->writeln(
+                    sprintf(
+                        'Still waiting for worker #%d to finish from an earlier reload',
+                        $slave->getPort()
+                    )
+                );
+            }
+            $closeByTimer = true;
+        } else {
+            $this->closeSlave($slave);
+            $this->output->writeln('<info>Slave is closing</info>');
+            $onSlaveClosed($slave);
+        }
+
+        if ($closeByTimer) {
+            $slavePort = $slave->getPort();
+            if (isset($this->closeSlaveTimers[$slavePort])) {
+                $this->loop->cancelTimer($this->closeSlaveTimers[$slavePort]);
+            }
+            $this->closeSlaveTimers[$slavePort] = $this->loop->addTimer($this->reloadTimeout, function() use ($slave, $onSlaveClosed, $slavePort) {
+                $this->output->writeln(
+                    sprintf(
+                        '<error>Worker #%d exceeded the graceful reload timeout and was killed.</error>',
+                        $slavePort
+                    )
+                );
+
+                unset($this->closeSlaveTimers[$slavePort]);
+                $this->closeSlave($slave);
+                //$onSlaveClosed($slave);
+            });
         }
     }
 
@@ -1116,7 +1222,7 @@ class ProcessManager
             'debug' => $this->isDebug(),
             'logging' => $this->isLogging(),
             'static-directory' => $this->getStaticDirectory(),
-            'populate-server-var' => $this->isPopulateServer()
+            'populate-server-var' => $this->isPopulateServer(),
         ];
 
         $config = var_export($config, true);
@@ -1169,7 +1275,7 @@ EOF;
         // use exec to omit wrapping shell
         $process = new Process($commandline);
 
-        $slave = new Slave($port, $this->maxRequests, $this->ttl);
+        $slave = new Slave($port, $this->maxRequests, $this->ttl, $this->maxMemoryUsage);
         $slave->attach($process);
         $this->slaves->add($slave);
 
